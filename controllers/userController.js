@@ -1,8 +1,10 @@
 const debug = require("debug");
-const User = require("../models/user");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
+const passport = require("passport");
+
+const User = require("../models/user");
 
 // Display user create form on GET.
 exports.user_sign_in_get = (req, res, next) => {
@@ -81,5 +83,47 @@ exports.user_sign_in_post = [
         res.redirect("/");
       });
     }
+  }),
+];
+
+// Display user login form on GET.
+exports.user_log_in_get = (req, res, next) => {
+  const message = req.session.messages[req.session.messages.length - 1];
+  res.render("user_log_in_form", { title: "Log in", message: message });
+};
+
+// Display user login form on GET.
+exports.user_log_in_post = [
+  // Validate and sanitize fields.
+  body("username", "Username must not be empty.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body("password", "Password must not be empty")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+
+  // Process request after validation and sanitization.
+  asyncHandler(async (req, res, next) => {
+    // Extract the validation errors from a request.
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      // There are errors. Render form again with sanitized values/error messages.
+      res.render("user_log_in_form", {
+        title: "Log in",
+        username: req.body.username,
+        password: req.body.password,
+        errors: errors.array(),
+      });
+    } else {
+      next();
+    }
+  }),
+  passport.authenticate("local", {
+    successRedirect: "/",
+    failureRedirect: "/users/user/log-in",
+    failureMessage: true,
   }),
 ];
