@@ -80,7 +80,7 @@ exports.user_sign_in_post = [
         });
 
         await hashedUser.save();
-        res.redirect("/");
+        res.redirect("/users/user/log-in");
       });
     }
   }),
