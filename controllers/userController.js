@@ -88,7 +88,9 @@ exports.user_sign_in_post = [
 
 // Display user login form on GET.
 exports.user_log_in_get = (req, res, next) => {
-  const message = req.session.messages[req.session.messages.length - 1];
+  const message = req.session.messages
+    ? req.session.messages[req.session.messages.length - 1]
+    : req.session.messages;
   res.render("user_log_in_form", { title: "Log in", message: message });
 };
 
