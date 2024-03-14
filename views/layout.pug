@@ -11,10 +11,14 @@ html(lang='en')
         ul(class='sidebar-nav')
           li
             a(href='/') Home
-          li
-            a(href='/users/user/sign-up') Sign up
-          li
-            a(href='/users/user/log-in') Log in
+          if currentUser
+            li
+              a(href='/users/user/log-out') Log out
+          else 
+            li
+              a(href='/users/user/sign-up') Sign up
+            li
+              a(href='/users/user/log-in') Log in
 
       div(class='content')
         block content
