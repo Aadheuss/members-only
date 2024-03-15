@@ -1,0 +1,20 @@
+extends layout
+
+block content
+
+  h1 #{title}
+  
+  if currentUser.membership
+    p You are already a member 
+  else 
+    p Enter secret pass to join
+    form(method='POST')
+      div.form-group
+        label(for='secret-pass') Secret Pass:
+        input#secret-pass(type='password', placeholder='Enter the secret password' name='secret_pass' required value=(undefined===secret_pass ? '' : secret_pass))
+      button.btn.btn-primary(type='submit') Submit
+
+  if errors
+    ul
+      for error in errors
+        li!= error.msg

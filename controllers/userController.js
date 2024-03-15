@@ -94,7 +94,7 @@ exports.user_log_in_get = (req, res, next) => {
   res.render("user_log_in_form", { title: "Log in", message: message });
 };
 
-// Display user login form on GET.
+// Display user login form on POST.
 exports.user_log_in_post = [
   // Validate and sanitize fields.
   body("username", "Username must not be empty.")
@@ -138,3 +138,40 @@ exports.user_log_out_get = (req, res, next) => {
     res.redirect("/");
   });
 };
+
+// Display user membership on GET.
+exports.user_membership_get = (req, res, next) => {
+  res.render("user_membership_form", { title: "Membership" });
+};
+
+// Display user membership on POST
+exports.user_membership_post = [
+  body("secret_pass", "Secret Pass must not be empty")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  // Process request after validation and sanitization.
+  asyncHandler(async (req, res, next) => {
+    // Extract the validation errors from a request.
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      // There are errors. Render form again with sanitized values/error messages.
+      res.render("user_membership_form", {
+        title: "Membership",
+        secret_pass: req.body.secret_pass,
+        errors: errors.array(),
+      });
+    } else {
+      if (req.body.secret_pass === process.env.SECRET_PASS) {
+        await User.findByIdAndUpdate(req.user._id, { membership: true }, {});
+        res.redirect("/users/user/membership");
+      } else {
+        res.render("user_membership_form", {
+          title: "Membership",
+          errors: [{ msg: "Wrong Secret Pass!" }],
+        });
+      }
+    }
+  }),
+];
