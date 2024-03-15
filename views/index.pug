@@ -12,8 +12,8 @@ block content
         li
           h4 #{message.title} 
           p #{message.text}
-          div #{message.timestamp_formatted}
-          if user
+          if user && user.membership
+            div #{message.timestamp_formatted}
             div #{message.author.username}
           else
             div Anonymous
