@@ -32,4 +32,10 @@ router.get("/user/message/create", message_controller.message_create_get);
 // POST request to message create
 router.post("/user/message/create", message_controller.message_create_post);
 
+// GET request to message delete
+router.get("/user/message/:id/delete", message_controller.message_delete_get);
+
+// POST request to message delete
+router.post("/user/message/:id/delete", message_controller.message_delete_post);
+
 module.exports = router;

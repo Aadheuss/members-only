@@ -39,3 +39,26 @@ exports.message_create_post = [
     }
   }),
 ];
+
+// Handle Message delete on GET.
+exports.message_delete_get = asyncHandler(async (req, res, next) => {
+  // Get details message
+  const message = await Message.findById(req.params.id).exec();
+
+  if (message === null) {
+    // No results.
+    res.redirect("/");
+  }
+
+  res.render("message_delete_form", {
+    title: "Delete Message",
+    message: message,
+  });
+});
+
+// Handle Message delete on POST.
+exports.message_delete_post = asyncHandler(async (req, res, next) => {
+  const message = Message.findById(req.params.id).exec();
+  await Message.findByIdAndDelete(req.body.message_id);
+  res.redirect("/");
+});

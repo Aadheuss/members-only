@@ -12,10 +12,12 @@ block content
         li
           h4 #{message.title} 
           p #{message.text}
-          if user && user.membership
+          if user && (user.membership || user.is_admin)
             div #{message.timestamp_formatted}
             div #{message.author.username}
           else
             div Anonymous
+          if user && user.is_admin 
+            a(href=message.url+'/delete') delete message
   else 
     p There are no messages
